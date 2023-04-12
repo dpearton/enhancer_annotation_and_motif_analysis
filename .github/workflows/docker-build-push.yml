@@ -1,0 +1,31 @@
+name: docker-build-push
+#https://github.com/marketplace/actions/build-and-push-docker-images
+
+on:
+  push:
+    branches: 
+      - main
+    paths: 
+      - '**/Dockerfile'
+
+jobs:
+  build-push-docker:
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 1
+      matrix:
+        tag: ["base"]
+        docker-file: ["Dockerfile"]
+        module-name: ["memesuite_fimo"]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build and push image
+        uses: docker/build-push-action@v1.1.0
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: alexthiery/${{matrix.module-name}}
+          path: modules/local/${{matrix.module-name}}
+          dockerfile: modules/local/${{matrix.module-name}}/${{matrix.docker-file}}
+          tags: latest
