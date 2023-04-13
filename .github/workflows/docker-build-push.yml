@@ -16,7 +16,7 @@ jobs:
       matrix:
         tag: ["base"]
         docker-file: ["Dockerfile"]
-        module-name: ["tidyverse_getopt"]
+        module-name: ["motif_enhancer_screening"]
 
     steps:
       - uses: actions/checkout@v2
