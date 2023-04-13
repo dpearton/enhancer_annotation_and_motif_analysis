@@ -1,7 +1,7 @@
 process ANNOTATE_MOTIF_HITS {
     label 'process_low'
 
-    container "rocker/tidyverse"
+    container "alexthiery/tidyverse_getopt:latest"
 
     input:
     path annotated_enhancers
