@@ -4,17 +4,19 @@ process ANNOTATE_MOTIF_HITS {
     container "alexthiery/tidyverse_getopt:latest"
 
     input:
-    path annotated_enhancers
-    path motif_hits
+    path annotated_peaks
+    path motif_tsv
 
     output:
-    path "annotated_motif_hits.txt"
+    path "annotated_motifs.tsv"
 
     script:
     def args = task.ext.args  ?: ''
 
     """
-    Rscript $moduleDir/bin/annotate_motif_hits.R \\
+    Rscript $baseDir/bin/annotate_motif_hits.R \\
+        --annotated_peaks ${annotated_peaks} \\
+        --motif_tsv ${motif_tsv} \\
         $args
     """
 }
