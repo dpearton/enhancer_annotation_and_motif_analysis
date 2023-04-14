@@ -14,14 +14,10 @@ jobs:
           lastrepo=""
           lastseen=""
           images=()
-
-          for image in $(cat legacy-docker-images.txt); do
-              images+=("${image}")
-          done
-
-          for module in NF-downstream_analysis/containers/*; do
+          
+          for module in containers/*; do
               if [ -f "$module"/Dockerfile ]; then
-                  images+=($(echo "alexthiery/10x-npb-${module##*/}:base-$(cat "$module"/VERSION)"))
+                  images+=($(echo "alexthiery/${module##*/}:latest))
               fi
           done
 
