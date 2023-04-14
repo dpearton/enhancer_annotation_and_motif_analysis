@@ -7,4 +7,5 @@ LABEL authors="alex.thiery@crick.ac.uk" \
 RUN   R -e "install.packages('optparse')" && \
       R -e "install.packages('ggplot2')" && \
       R -e "BiocManager::install('GenomicRanges')" && \
-      R -e "BiocManager::install('GenomicFeatures')"
+      R -e "BiocManager::install('rtracklayer')"
+

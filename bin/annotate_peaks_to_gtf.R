@@ -4,7 +4,6 @@
 #############################################################################################################################
 
 library(GenomicRanges)
-library(GenomicFeatures)
 library(rtracklayer)
 library(tidyverse)
 library(optparse)
