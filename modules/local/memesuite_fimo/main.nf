@@ -6,6 +6,7 @@ process MEMESUITE_FIMO {
     input:
     path motif_matrix
     path fasta
+    path markov_background
 
     output:
     path "*"
@@ -17,6 +18,7 @@ process MEMESUITE_FIMO {
     """
     fimo \\
         $args \\
+        --bfile ${markov_background} \\
         ${motif_matrix} \\
         ${fasta}
     """
