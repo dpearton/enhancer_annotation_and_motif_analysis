@@ -1,7 +1,7 @@
 process ANNOTATE_MOTIF_HITS {
     label 'process_low'
 
-    container "alexthiery/tidyverse_getopt:latest"
+    container "alexthiery/motif_enhancer_screening:latest"
 
     input:
     path annotated_peaks
