@@ -12,3 +12,57 @@ docker exec memesuite jaspar2meme -bundle -pfm test_data/test.pfm
 docker run -it -v $PWD:/temp quay.io/biocontainers/gtfparse:1.2.1--pyh864c0ab_0 /bin/bash
 
 
+docker exec memesuite uniprobe2meme /home/data/nar-00696-h-2012-File007.txt > optimised_six1.txt    
+
+docker exec memesuite jaspar2meme -cm /home/data/six1-pwm.txt
+
+
+
+
+
+
+
+
+## Introduction
+
+**Streit-lab/motif_enhancer_screening** is a bioinformatic analysis pipeline for identifying enhancers associated to genes of interest and screening for motif binding sites.
+
+The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool to run tasks across multiple compute infrastructures in a portable, reproducible manner.
+
+![pipeline_diagram](docs/images/cutandrun-flow-diagram-v3.0.png)
+
+## Pipeline summary
+
+1. Conditionally unzip genome (--fasta) and GTF (--gtf) files
+2. Filter genes of interest (--gene_list) from GTF and filter gene biotype entries in GTF
+3. Conditionally extend length of peaks (--peaks) by a given length (--extend_peaks)
+4. Retrieve filtered peak fasta sequences
+5. Calculate background base frequencies for motif screening
+6. Identify motif binding sites in peaks ([`fimo`](https://meme-suite.org/meme/doc/fimo.html))
+7. Annotate peak-motif file with nearby genes
+
+## Quick Start
+
+1. Install [`Nextflow`](https://www.nextflow.io/docs/latest/getstarted.html#installation) (`>=21.10.3`)
+
+2. Install any of [`Docker`](https://docs.docker.com/engine/installation/), [`Singularity`](https://www.sylabs.io/guides/3.0/user-guide/) (you can follow [this tutorial](https://singularity-tutorial.github.io/01-installation/)).
+
+3. Download the pipeline and test it on a minimal dataset with a single command:
+
+   ```bash
+   nextflow run Streit-lab/motif_enhancer_screening -profile test,YOURPROFILE --outdir <OUTDIR>
+   ```
+
+   Note that some form of configuration will be needed so that Nextflow knows how to fetch the required software. This is usually done in the form of a config profile (`YOURPROFILE` in the example command above). You can chain multiple config profiles in a comma-separated string.
+
+   > - The pipeline comes with config profiles called `docker`, `singularity` and `conda` which instruct the pipeline to use the named tool for software management. For example, `-profile test,docker`.
+   > - If you are using `singularity`, please use the [`nf-core download`](https://nf-co.re/tools/#downloading-pipelines-for-offline-use) command to download images first, before running the pipeline. Setting the [`NXF_SINGULARITY_CACHEDIR` or `singularity.cacheDir`](https://www.nextflow.io/docs/latest/singularity.html?#singularity-docker-hub) Nextflow options enables you to store and re-use the images from a central location for future pipeline runs.
+   > - If you are using `conda`, it is highly recommended to use the [`NXF_CONDA_CACHEDIR` or `conda.cacheDir`](https://www.nextflow.io/docs/latest/conda.html) settings to store the environments in a central location for future pipeline runs.
+
+4. Start running your own analysis!
+
+   - Typical command for Streit-lab/motif_enhancer_screening analysis:
+
+   ```bash
+   nextflow run Streit-lab/motif_enhancer_screening --fasta <FASTA_PATH_OR_URL> --gtf <GTF_PATH_OR_URL> --motif_matrix <MEME_MOTIF_FILE> --peaks_bed <PEAK_BED_FILE> --gene_ids <GENE_ID_FILE> --extend_peaks 50 --enhancer_window 50000 --outdir <OUTDIR> -profile <docker/singularity/conda>
+   ```
