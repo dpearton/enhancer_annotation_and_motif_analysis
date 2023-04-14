@@ -43,15 +43,25 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 ## Pipeline parameters
 
 `--fasta`: *Required* Path or URL to fasta file, can be gzipped.
+
 `--gtf`: *Required* Path or URL to GTF file, can be gzipped.
+
 `--motif_matrix`: *Required* Path to matrix file in [`meme`](https://meme-suite.org/meme/doc/meme-format.html) format. [`Example file`](https://github.com/Streit-lab/motif_enhancer_screening/blob/main/test_data/six1_motifs.txt). 
+
 `--peaks_bed`: *Required* Path to peak file in BED format. Must contain four columns; chrom, start, end, peakid. [`Example file`](https://github.com/Streit-lab/motif_enhancer_screening/blob/main/test_data/peaks.bed).
+
 `--gene_ids`: *Required* List of gene ids present in GTF to screen for enhancers and motifs. One gene id per line. [`Example file`](https://github.com/Streit-lab/motif_enhancer_screening/blob/main/test_data/peaks.bed).
+
 `--extend_peaks`: *Optional* Number of bases by which to extend peaks (up and downstream). Default = 0.
+
 `--enhancer_window`: *Optional* Distance from TSS in GTF within which enhancers are screened. Default = 50000.
+
 `--markov_background`: *Optional* Markov background model used to define base frequencies for motif screening. This is calculated by default from the provided --fasta input.
+
 `--gtf_gene_name_col`: *Optional* Entry in GTF corresponding to gene names. Default = 'gene_name'.
+
 `--gtf_gene_id_col`: *Optional* Entry in GTF corresponding to gene names. Default = 'gene_id'.
+
 `--outdir`: *Optional* Directory to output results to. Default = 'results'.
 
 
