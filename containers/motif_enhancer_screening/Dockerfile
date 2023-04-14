@@ -6,6 +6,4 @@ LABEL authors="alex.thiery@crick.ac.uk" \
 # Install scHelper
 RUN   R -e "install.packages('optparse')" && \
       R -e "install.packages('ggplot2')" && \
-      R -e "BiocManager::install('GenomicRanges')" && \
-      R -e "BiocManager::install('rtracklayer')"
-
+      R -e "BiocManager::install(c('GenomicRanges', 'Rhtslib', 'Rsamtools', 'GenomicAlignments', 'rtracklayer'))"
