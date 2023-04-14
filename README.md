@@ -1,28 +1,3 @@
-# Motif Enhancer Screening
-Mini nextflow pipeline for filtering enhancers associated to differentially expressed genes, and then screening for motifs of interest
-
-
-
-
-docker run -it -d --name memesuite -v ${PWD}:/home/data memesuite/memesuite /bin/bash
-docker exec memesuite jaspar2meme -bundle -pfm test_data/test.pfm
-
-
-
-docker run -it -v $PWD:/temp quay.io/biocontainers/gtfparse:1.2.1--pyh864c0ab_0 /bin/bash
-
-
-docker exec memesuite uniprobe2meme /home/data/nar-00696-h-2012-File007.txt > optimised_six1.txt    
-
-docker exec memesuite jaspar2meme -cm /home/data/six1-pwm.txt
-
-
-
-
-
-
-
-
 ## Introduction
 
 **Streit-lab/motif_enhancer_screening** is a bioinformatic analysis pipeline for identifying enhancers associated to genes of interest and screening for motif binding sites.
