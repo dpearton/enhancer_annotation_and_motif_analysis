@@ -4,8 +4,6 @@
 
 The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool to run tasks across multiple compute infrastructures in a portable, reproducible manner.
 
-![pipeline_diagram](docs/images/cutandrun-flow-diagram-v3.0.png)
-
 ## Pipeline summary
 
 1. Conditionally unzip genome (--fasta) and GTF (--gtf) files
@@ -25,7 +23,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 3. Download the pipeline and test it on a minimal dataset with a single command:
 
    ```bash
-   nextflow run Streit-lab/motif_enhancer_screening -profile test,YOURPROFILE --outdir <OUTDIR>
+   nextflow run Streit-lab/motif_enhancer_screening -r main -profile test,docker --outdir output
    ```
 
    Note that some form of configuration will be needed so that Nextflow knows how to fetch the required software. This is usually done in the form of a config profile (`YOURPROFILE` in the example command above). You can chain multiple config profiles in a comma-separated string.
@@ -39,5 +37,21 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
    - Typical command for Streit-lab/motif_enhancer_screening analysis:
 
    ```bash
-   nextflow run Streit-lab/motif_enhancer_screening --fasta <FASTA_PATH_OR_URL> --gtf <GTF_PATH_OR_URL> --motif_matrix <MEME_MOTIF_FILE> --peaks_bed <PEAK_BED_FILE> --gene_ids <GENE_ID_FILE> --extend_peaks 50 --enhancer_window 50000 --outdir <OUTDIR> -profile <docker/singularity/conda>
+   nextflow run Streit-lab/motif_enhancer_screening --fasta <FASTA_PATH_OR_URL> --gtf <GTF_PATH_OR_URL> --motif_matrix <MEME_MOTIF_FILE> --peaks_bed <PEAK_BED_FILE> -profile <docker/singularity/conda>
    ```
+
+## Pipeline parameters
+
+`--fasta`: *Required* Path or URL to fasta file, can be gzipped.
+`--gtf`: *Required* Path or URL to GTF file, can be gzipped.
+`--motif_matrix`: *Required* Path to matrix file in [`meme`](https://meme-suite.org/meme/doc/meme-format.html) format. [`Example file`](https://github.com/Streit-lab/motif_enhancer_screening/blob/main/test_data/six1_motifs.txt). 
+`--peaks_bed`: *Required* Path to peak file in BED format. Must contain four columns; chrom, start, end, peakid. [`Example file`](https://github.com/Streit-lab/motif_enhancer_screening/blob/main/test_data/peaks.bed).
+`--gene_ids`: *Required* List of gene ids present in GTF to screen for enhancers and motifs. One gene id per line. [`Example file`](https://github.com/Streit-lab/motif_enhancer_screening/blob/main/test_data/peaks.bed).
+`--extend_peaks`: *Optional* Number of bases by which to extend peaks (up and downstream). Default = 0.
+`--enhancer_window`: *Optional* Distance from TSS in GTF within which enhancers are screened. Default = 50000.
+`--markov_background`: *Optional* Markov background model used to define base frequencies for motif screening. This is calculated by default from the provided --fasta input.
+`--gtf_gene_name_col`: *Optional* Entry in GTF corresponding to gene names. Default = 'gene_name'.
+`--gtf_gene_id_col`: *Optional* Entry in GTF corresponding to gene names. Default = 'gene_id'.
+`--outdir`: *Optional* Directory to output results to. Default = 'results'.
+
+
