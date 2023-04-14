@@ -20,14 +20,17 @@ opt_parser = OptionParser(option_list = option_list)
 opt <- parse_args(opt_parser)
 
 peaks <- read.csv(opt$peak_bed, stringsAsFactors = FALSE, col.names = c('chrom', 'start', 'end', 'peakid'), sep = "\t")
+# peaks <- read.csv('/temp/test_data/peaks.bed', stringsAsFactors = FALSE, col.names = c('chrom', 'start', 'end', 'peakid'), sep = "\t")
+# peaks <- read.csv('/temp/results/extend_peaks/extended_peaks.bed', stringsAsFactors = FALSE, col.names = c('chrom', 'start', 'end', 'peakid'), sep = "\t")
 
 # keep only unique peaks (incase bed contains duplicated peaks - keep first hit)
 peaks <- distinct(peaks, chrom, start, end, .keep_all = TRUE)
 
-gtf <- import(opt$peak_gtf)
+gtf <- import(opt$gtf)
+# gtf <- import('/temp/results/filter_gtf_gene_list/Gallus_gallus.GRCg6a.97_filtered.gtf')
 
 # Add +- window (default 100kb) to GTF coordinates
-start(gtf) <- start(gtf)+opt$window
+start(gtf) <- start(gtf)-opt$window
 end(gtf) <- start(gtf)+opt$window
 
 # Set negative coordinates to 0
