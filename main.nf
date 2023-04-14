@@ -12,6 +12,7 @@ if(params.debug) {log.info Headers.build_debug_param_summary(params, params.mono
 /* Module inclusions
 --------------------------------------------------------------------------------------*/
 include { GUNZIP as GUNZIP_FASTA }      from "$baseDir/modules/local/gunzip/main"
+include { GUNZIP as GUNZIP_GTF }        from "$baseDir/modules/local/gunzip/main"
 include { EXTEND_PEAKS }                from "$baseDir/modules/local/extend_peaks/main"
 include { FILTER_GTF_GENE_LIST }        from "$baseDir/modules/local/filter_gtf_gene_list/main"
 include { ANNOTATE_PEAKS_TO_GTF }       from "$baseDir/modules/local/annotate_peaks_to_gtf/main"
@@ -36,10 +37,6 @@ Channel
     .value(params.gene_ids)
     .set{ch_gene_ids}
 
-Channel
-    .value(params.gtf)
-    .set{ch_gtf}
-
 /*------------------------------------------------------------------------------------
 Workflow
 --------------------------------------------------------------------------------------*/
@@ -50,6 +47,13 @@ workflow {
         ch_fasta    = GUNZIP_FASTA ( params.fasta ).gunzip
     } else {
         ch_fasta = file( params.fasta )
+    }
+
+    // Uncompress genome gtf file if required
+    if (params.fasta.endsWith(".gz")) {
+        ch_gtf    = GUNZIP_GTF ( params.gtf ).gunzip
+    } else {
+        ch_gtf = file( params.gtf )
     }
 
     // Filter gtf based on gene list
