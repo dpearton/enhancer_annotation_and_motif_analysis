@@ -1,6 +1,6 @@
 ## Introduction
 
-**Streit-lab/motif_enhancer_screening** is a bioinformatic analysis pipeline for identifying enhancers associated to genes of interest and screening for motif binding sites.
+**Streit-lab/enhancer_annotation_and_motif_analysis** is a bioinformatic analysis pipeline for identifying enhancers associated to genes of interest and screening for motif binding sites.
 
 The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool to run tasks across multiple compute infrastructures in a portable, reproducible manner.
 
@@ -23,7 +23,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 3. Download the pipeline and test it on a minimal dataset with a single command:
 
    ```bash
-   nextflow run Streit-lab/motif_enhancer_screening -r main -profile test,docker --outdir output
+   nextflow run Streit-lab/enhancer_annotation_and_motif_analysis -r main -profile test,docker --outdir output
    ```
 
    Note that some form of configuration will be needed so that Nextflow knows how to fetch the required software. This is usually done in the form of a config profile (`YOURPROFILE` in the example command above). You can chain multiple config profiles in a comma-separated string.
@@ -34,34 +34,34 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 
 4. Start running your own analysis!
 
-   - Typical command for Streit-lab/motif_enhancer_screening analysis:
+   - Typical command for Streit-lab/enhancer_annotation_and_motif_analysis analysis:
 
    ```bash
-   nextflow run Streit-lab/motif_enhancer_screening --fasta <FASTA_PATH_OR_URL> --gtf <GTF_PATH_OR_URL> --motif_matrix <MEME_MOTIF_FILE> --peaks_bed <PEAK_BED_FILE> -profile <docker/singularity/conda>
+   nextflow run Streit-lab/enhancer_annotation_and_motif_analysis --fasta <FASTA_PATH_OR_URL> --gtf <GTF_PATH_OR_URL> --motif_matrix <MEME_MOTIF_FILE> --peaks_bed <PEAK_BED_FILE> -profile <docker/singularity/conda>
    ```
 
 ## Pipeline parameters
 
-`--fasta`: *Required* Path or URL to fasta file, can be gzipped.
+`--fasta`: *Required*. Path or URL to fasta file, can be gzipped.
 
-`--gtf`: *Required* Path or URL to GTF file, can be gzipped.
+`--gtf`: *Required*. Path or URL to GTF file, can be gzipped.
 
-`--motif_matrix`: *Required* Path to matrix file in [`meme`](https://meme-suite.org/meme/doc/meme-format.html) format. [`Example file`](https://github.com/Streit-lab/motif_enhancer_screening/blob/main/test_data/six1_motifs.txt). 
+`--motif_matrix`: *Required*. Path to matrix file in [`meme`](https://meme-suite.org/meme/doc/meme-format.html) format. [`Example file`](https://github.com/Streit-lab/enhancer_annotation_and_motif_analysis/blob/main/test_data/six1_motifs.txt). 
 
-`--peaks_bed`: *Required* Path to peak file in BED format. Must contain four columns; chrom, start, end, peakid. [`Example file`](https://github.com/Streit-lab/motif_enhancer_screening/blob/main/test_data/peaks.bed).
+`--peaks_bed`: *Required*. Path to peak file in BED format. Must contain four columns; chrom, start, end, peakid. [`Example file`](https://github.com/Streit-lab/enhancer_annotation_and_motif_analysis/blob/main/test_data/peaks.bed).
 
-`--gene_ids`: *Required* List of gene ids present in GTF to screen for enhancers and motifs. One gene id per line. [`Example file`](https://github.com/Streit-lab/motif_enhancer_screening/blob/main/test_data/peaks.bed).
+`--gene_ids`: *Required*. List of gene ids present in GTF to screen for enhancers and motifs. One gene id per line. [`Example file`](https://github.com/Streit-lab/enhancer_annotation_and_motif_analysis/blob/main/test_data/peaks.bed).
 
-`--extend_peaks`: *Optional* Number of bases by which to extend peaks (up and downstream). Default = 0.
+`--extend_peaks`: *Optional*. Number of bases by which to extend peaks (up and downstream). Default = 0.
 
-`--enhancer_window`: *Optional* Distance from TSS in GTF within which enhancers are screened. Default = 50000.
+`--enhancer_window`: *Optional*. Distance from TSS in GTF within which enhancers are screened. Default = 50000.
 
-`--markov_background`: *Optional* Markov background model used to define base frequencies for motif screening. This is calculated by default from the provided --fasta input.
+`--markov_background`: *Optional*. Markov background model used to define base frequencies for motif screening. This is calculated by default from the provided --fasta input.
 
-`--gtf_gene_name_col`: *Optional* Entry in GTF corresponding to gene names. Default = 'gene_name'.
+`--gtf_gene_name_col`: *Optional*. Entry in GTF corresponding to gene names. Default = 'gene_name'.
 
-`--gtf_gene_id_col`: *Optional* Entry in GTF corresponding to gene names. Default = 'gene_id'.
+`--gtf_gene_id_col`: *Optional*. Entry in GTF corresponding to gene names. Default = 'gene_id'.
 
-`--outdir`: *Optional* Directory to output results to. Default = 'results'.
+`--outdir`: *Optional*. Directory to output results to. Default = 'results'.
 
 

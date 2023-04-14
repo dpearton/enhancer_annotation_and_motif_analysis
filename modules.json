@@ -1,6 +1,6 @@
 {
   "name": "Motif Enhancer Screening",
-  "homePage": "Streit-lab/motif_enhancer_screening",
+  "homePage": "Streit-lab/enhancer_annotation_and_motif_analysis",
   "repos": {
     "https://github.com/nf-core/modules.git": {
       "modules": {

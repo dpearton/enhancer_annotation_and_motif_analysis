@@ -1,7 +1,7 @@
 process ANNOTATE_PEAKS_TO_GTF {
     label 'process_low'
 
-    container "alexthiery/motif_enhancer_screening:latest"
+    container "alexthiery/enhancer_annotation_and_motif_analysis:latest"
 
     input:
     path peaks
