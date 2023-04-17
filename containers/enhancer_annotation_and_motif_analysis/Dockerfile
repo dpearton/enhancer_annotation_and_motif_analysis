@@ -1,4 +1,4 @@
-FROM  rocker/tidyverse:latest
+FROM  rocker/tidyverse:4.0.4
 
 LABEL authors="alex.thiery@crick.ac.uk" \
       description="Docker image containing tidyverse and getopt"
