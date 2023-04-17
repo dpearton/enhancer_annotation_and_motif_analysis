@@ -58,6 +58,8 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 
 `--markov_background`: *Optional*. Markov background model used to define base frequencies for motif screening. This is calculated by default from the provided --fasta input.
 
+`--fimo_pval`: *Optional*. p-value threshold used by FIMO for motif screening.
+
 `--gtf_gene_name_col`: *Optional*. Entry in GTF corresponding to gene names. Default = 'gene_name'.
 
 `--gtf_gene_id_col`: *Optional*. Entry in GTF corresponding to gene names. Default = 'gene_id'.
