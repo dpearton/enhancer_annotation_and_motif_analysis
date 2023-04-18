@@ -6,7 +6,7 @@ process ANNOTATE_PEAKS_TO_GTF_CTCF {
     input:
     path peaks
     path gtf
-    path flanking_ctcf
+    path ctcf_flanking_peaks
 
     output:
     path "annotated_peaks.bed", emit: bed
@@ -21,6 +21,7 @@ process ANNOTATE_PEAKS_TO_GTF_CTCF {
     Rscript $baseDir/bin/annotate_peaks_to_gtf.R \\
         --peak_bed ${peaks} \\
         --gtf ${gtf} \\
+        --ctcf_flanking_peaks ${ctcf_flanking_peaks} \\
         $args
     """
 }
