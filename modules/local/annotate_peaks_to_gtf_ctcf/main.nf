@@ -18,7 +18,7 @@ process ANNOTATE_PEAKS_TO_GTF_CTCF {
     def args = task.ext.args  ?: ''
 
     """
-    Rscript $baseDir/bin/annotate_peaks_to_gtf.R \\
+    Rscript $baseDir/bin/annotate_peaks_to_gtf_ctcf.R \\
         --peak_bed ${peaks} \\
         --gtf ${gtf} \\
         --ctcf_flanking_peaks ${ctcf_flanking_peaks} \\
