@@ -19,17 +19,17 @@ option_list <- list(
 opt_parser = OptionParser(option_list = option_list)
 opt <- parse_args(opt_parser)
 
-# peaks <- read.csv(opt$peak_bed, stringsAsFactors = FALSE, col.names = c('chrom', 'start', 'end', 'peakid'), sep = "\t")
-# peaks <- read.csv('/temp/test_data/peaks.bed', stringsAsFactors = FALSE, col.names = c('chrom', 'start', 'end', 'peakid'), sep = "\t")
-peaks <- read.csv('./results/extend_peaks/extended_peaks.bed', stringsAsFactors = FALSE, col.names = c('chrom', 'start', 'end', 'peakid'), sep = "\t")
+peaks <- read.csv(opt$peak_bed, stringsAsFactors = FALSE, col.names = c('chrom', 'start', 'end', 'peakid'), sep = "\t")
+# peaks <- read.csv('./results/extend_peaks/extended_peaks.bed', stringsAsFactors = FALSE, col.names = c('chrom', 'start', 'end', 'peakid'), sep = "\t")
 
 # keep only unique peaks (incase bed contains duplicated peaks - keep first hit)
 peaks <- distinct(peaks, chrom, start, end, .keep_all = TRUE)
 
-# gtf <- import(opt$gtf)
-gtf <- import('./results/filter_gtf_gene_list/Gallus_gallus.GRCg6a.97_filtered.gtf')
+gtf <- import(opt$gtf)
+# gtf <- import('./results/filter_gtf_gene_list/Gallus_gallus.GRCg6a.97_filtered.gtf')
 
-ctcf <- read.csv('./results/bedtools_sort_flanking_ctcf/sorted_ctcf_flanking_peaks.bed', stringsAsFactors = FALSE, col.names = c('chrom', 'start', 'end', 'peakid'), sep = "\t")
+ctcf <- read.csv(opt$ctcf_flanking_peaks, stringsAsFactors = FALSE, col.names = c('chrom', 'start', 'end', 'peakid'), sep = "\t")
+# ctcf <- read.csv('./results/bedtools_sort_flanking_ctcf/sorted_ctcf_flanking_peaks.bed', stringsAsFactors = FALSE, col.names = c('chrom', 'start', 'end', 'peakid'), sep = "\t")
 
 # Create peak ctcf GRanges
 ctcf_flanking_peaks_granges <- GRanges(seqnames=ctcf$chrom, ranges=IRanges(start=ctcf$start, end=ctcf$end, names=ctcf$peakid))
