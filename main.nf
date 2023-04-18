@@ -11,15 +11,20 @@ if(params.debug) {log.info Headers.build_debug_param_summary(params, params.mono
 /*------------------------------------------------------------------------------------*/
 /* Module inclusions
 --------------------------------------------------------------------------------------*/
-include { GUNZIP as GUNZIP_FASTA }      from "$baseDir/modules/local/gunzip/main"
-include { GUNZIP as GUNZIP_GTF }        from "$baseDir/modules/local/gunzip/main"
-include { EXTEND_PEAKS }                from "$baseDir/modules/local/extend_peaks/main"
-include { FILTER_GTF_GENE_LIST }        from "$baseDir/modules/local/filter_gtf_gene_list/main"
-include { ANNOTATE_PEAKS_TO_GTF }       from "$baseDir/modules/local/annotate_peaks_to_gtf/main"
-include { BEDTOOLS_GETFASTA }           from "$baseDir/modules/nf-core/bedtools/getfasta/main"
-include { MEMESUITE_FASTA_GET_MARKOV }  from "$baseDir/modules/local/memesuite_fasta_get_markov/main"
-include { MEMESUITE_FIMO }              from "$baseDir/modules/local/memesuite_fimo/main"
-include { ANNOTATE_MOTIF_HITS }         from "$baseDir/modules/local/annotate_motif_hits/main"
+include { GUNZIP as GUNZIP_FASTA }                          from "$baseDir/modules/local/gunzip/main"
+include { GUNZIP as GUNZIP_GTF }                            from "$baseDir/modules/local/gunzip/main"
+include { EXTEND_PEAKS }                                    from "$baseDir/modules/local/extend_peaks/main"
+include { FILTER_GTF_GENE_LIST }                            from "$baseDir/modules/local/filter_gtf_gene_list/main"
+include { ANNOTATE_PEAKS_TO_GTF }                           from "$baseDir/modules/local/annotate_peaks_to_gtf/main"
+include { ANNOTATE_PEAKS_TO_GTF_CTCF }                      from "$baseDir/modules/local/annotate_peaks_to_gtf_ctcf/main"
+include { EXTRACT_FLANKING_CTCF }                           from "$baseDir/modules/local/extract_flanking_ctcf/main"
+include { BEDTOOLS_GETFASTA }                               from "$baseDir/modules/nf-core/bedtools/getfasta/main"
+include { BEDTOOLS_SORT as BEDTOOLS_SORT_PEAKS }            from "$baseDir/modules/local/bedtools/sort/main.nf"
+include { BEDTOOLS_SORT as BEDTOOLS_SORT_FLANKING_CTCF }    from "$baseDir/modules/local/bedtools/sort/main.nf"
+include { SAMTOOLS_FAIDX }                                  from "$baseDir/modules/local/samtools/faidx/main.nf"
+include { MEMESUITE_FASTA_GET_MARKOV }                      from "$baseDir/modules/local/memesuite_fasta_get_markov/main"
+include { MEMESUITE_FIMO }                                  from "$baseDir/modules/local/memesuite_fimo/main"
+include { ANNOTATE_MOTIF_HITS }                             from "$baseDir/modules/local/annotate_motif_hits/main"
 
 /*------------------------------------------------------------------------------------
 Set channels
@@ -49,26 +54,45 @@ workflow {
         ch_fasta = file( params.fasta )
     }
 
+    SAMTOOLS_FAIDX(ch_fasta)
+
     // Uncompress genome gtf file if required
     if (params.fasta.endsWith(".gz")) {
         ch_gtf    = GUNZIP_GTF ( params.gtf ).gunzip
     } else {
         ch_gtf = file( params.gtf )
     }
-
+    
     // Filter gtf based on gene list
     FILTER_GTF_GENE_LIST( ch_gtf, ch_gene_ids )
 
     // Conditionally extend peak length
-    // Annotate peaks based on GTF (either closest gene or using sliding window)
     if (params.extend_peaks != 0) {
-        ANNOTATE_PEAKS_TO_GTF( EXTEND_PEAKS( ch_peak_bed, params.extend_peaks ).bed, FILTER_GTF_GENE_LIST.out.gtf )
+        ch_peaks_processed = EXTEND_PEAKS( ch_peak_bed, params.extend_peaks ).bed
+    } else {
+        ch_peaks_processed = ch_peak_bed
+    }
+
+    BEDTOOLS_SORT_PEAKS ( ch_peaks_processed )
+
+    // Annotate peaks based on GTF (either closest gene or using sliding window) OR within flanking CTCF sites
+    if (params.ctcf) {
+        EXTRACT_FLANKING_CTCF ( BEDTOOLS_SORT_PEAKS.out.sorted, params.ctcf, SAMTOOLS_FAIDX.out.fai )
+        BEDTOOLS_SORT_FLANKING_CTCF ( EXTRACT_FLANKING_CTCF.out.bed )
+        ANNOTATE_PEAKS_TO_GTF_CTCF ( ch_peak_bed, FILTER_GTF_GENE_LIST.out.gtf, BEDTOOLS_SORT_FLANKING_CTCF.out.sorted )
+
+        ch_peak_annotations_bed = ANNOTATE_PEAKS_TO_GTF_CTCF.out.bed
+        ch_peak_annotations_tsv = ANNOTATE_PEAKS_TO_GTF_CTCF.out.tsv
+
     } else {
         ANNOTATE_PEAKS_TO_GTF( ch_peak_bed, FILTER_GTF_GENE_LIST.out.gtf )
+
+        ch_peak_annotations_bed = ANNOTATE_PEAKS_TO_GTF.out.bed
+        ch_peak_annotations_tsv = ANNOTATE_PEAKS_TO_GTF.out.tsv
     }
 
     // Get fasta sequences for peaks which are associated to genes in gene list
-    BEDTOOLS_GETFASTA( ANNOTATE_PEAKS_TO_GTF.out.bed, ch_fasta )
+    BEDTOOLS_GETFASTA( ch_peak_annotations_bed, ch_fasta )
 
     if (!params.markov_background){
         ch_background = MEMESUITE_FASTA_GET_MARKOV( ch_fasta )
@@ -80,5 +104,5 @@ workflow {
     MEMESUITE_FIMO( ch_motif_matrix, BEDTOOLS_GETFASTA.out.fasta, ch_background )
 
     // Add gene annotations to motif hits
-    ANNOTATE_MOTIF_HITS( ANNOTATE_PEAKS_TO_GTF.out.tsv, MEMESUITE_FIMO.out )
+    ANNOTATE_MOTIF_HITS( ch_peak_annotations_tsv, MEMESUITE_FIMO.out )
 }
