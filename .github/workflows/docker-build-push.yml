@@ -16,7 +16,7 @@ jobs:
       matrix:
         tag: ["base"]
         docker-file: ["Dockerfile"]
-        module-name: ["enhancer_annotation_and_motif_analysis"]
+        module-name: ["enhancer_annotation_and_motif_analysis", "parallel_flock"]
 
     steps:
       - uses: actions/checkout@v2
