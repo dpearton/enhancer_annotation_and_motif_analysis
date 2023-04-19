@@ -19,7 +19,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
       2. Sort flanking CTCF coordinates
       3. Annotate peaks to TSS within flanking CTCF sites
 
-   b) Assign TSS to peaks if they fall within an <x>kb window of the peak of interest
+   b) Assign TSS to peaks if they fall within an x.kb window of the peak of interest
 
 7. Retrieve filtered peak fasta sequences
 8. Calculate background base frequencies for motif screening
@@ -67,6 +67,8 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 `--extend_peaks`: *Optional*. Number of bases by which to extend peaks (up and downstream). Default = 0.
 
 `--enhancer_window`: *Optional*. Distance from TSS in GTF within which enhancers are screened. Default = 50000.
+
+`--ctcf`: *Optional*. BED file containing co-ordinates for CTCF peaks to use for annotating enhancers to genes.
 
 `--markov_background`: *Optional*. Markov background model used to define base frequencies for motif screening. This is calculated by default from the provided --fasta input.
 
