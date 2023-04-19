@@ -20,6 +20,7 @@ opt_parser = OptionParser(option_list = option_list)
 opt <- parse_args(opt_parser)
 
 peaks <- read.csv(opt$peak_bed, stringsAsFactors = FALSE, col.names = c('chrom', 'start', 'end', 'peakid'), sep = "\t")
+# peaks <- read.csv('/temp/test_data/peaks.bed', stringsAsFactors = FALSE, col.names = c('chrom', 'start', 'end', 'peakid'), sep = "\t")
 # peaks <- read.csv('./results/extend_peaks/extended_peaks.bed', stringsAsFactors = FALSE, col.names = c('chrom', 'start', 'end', 'peakid'), sep = "\t")
 
 # keep only unique peaks (incase bed contains duplicated peaks - keep first hit)
@@ -28,22 +29,25 @@ peaks <- distinct(peaks, chrom, start, end, .keep_all = TRUE)
 gtf <- import(opt$gtf)
 # gtf <- import('./results/filter_gtf_gene_list/Gallus_gallus.GRCg6a.97_filtered.gtf')
 
+# Use strand info to get start site of all genes - next we will identify which ctcf_flanking_peaks overlap with this start site
+gtf <- resize(gtf, width = 1)
+
 ctcf <- read.csv(opt$ctcf_flanking_peaks, stringsAsFactors = FALSE, col.names = c('chrom', 'start', 'end', 'peakid'), sep = "\t")
 # ctcf <- read.csv('./results/bedtools_sort_flanking_ctcf/sorted_ctcf_flanking_peaks.bed', stringsAsFactors = FALSE, col.names = c('chrom', 'start', 'end', 'peakid'), sep = "\t")
 
 # Create peak ctcf GRanges
 ctcf_flanking_peaks_granges <- GRanges(seqnames=ctcf$chrom, ranges=IRanges(start=ctcf$start, end=ctcf$end, names=ctcf$peakid))
 
-# For each peak, identify overlapping peaks
+# For each ctcf_flanking_peaks, identify overlapping gene start sites
 ctcf_flanking_peaks_gtf_hits <- lapply(1:length(ctcf_flanking_peaks_granges), function(x) findOverlaps(gtf, ctcf_flanking_peaks_granges[x,]))
 names(ctcf_flanking_peaks_gtf_hits) <- names(ctcf_flanking_peaks_granges)
 
 ctcf_flanking_peaks_gtf_hits <- lapply(ctcf_flanking_peaks_gtf_hits, function(row) {gtf[queryHits(row), c(opt$gene_id_col, opt$gene_name_col)]})
 
-# Filter peaks which have at least one gtf hit
+# Filter ctcf_flanking_peaks which have at least one gtf hit
 ctcf_flanking_peaks_gtf_hits <- ctcf_flanking_peaks_gtf_hits[unlist(lapply(ctcf_flanking_peaks_gtf_hits, length)) != 0]
 
-# extract gene ids and gene names for each peak
+# extract gene ids and gene names for each ctcf_flanking_peaks
 ctcf_flanking_peaks_gtf_hits <- lapply(ctcf_flanking_peaks_gtf_hits, function(x) {
   out <- as.data.frame(x)[,c(opt$gene_id_col, opt$gene_name_col)]
   gene_id = paste(out[,opt$gene_id_col], collapse = "|")
@@ -66,3 +70,4 @@ annotated_peaks <-annotated_peaks[, c('chrom', 'start', 'end', 'peakid', opt$gen
 # Save both annotated peaks and peak bed for motif screening
 write.table(annotated_peaks[,1:4], 'annotated_peaks.bed', row.names = FALSE, quote = FALSE, col.names = FALSE, sep = "\t")
 write.table(annotated_peaks, 'annotated_peaks.tsv', row.names = FALSE, quote = FALSE, col.names = TRUE, sep = "\t")
+

@@ -26,24 +26,24 @@ peaks <- read.csv(opt$peak_bed, stringsAsFactors = FALSE, col.names = c('chrom',
 # keep only unique peaks (incase bed contains duplicated peaks - keep first hit)
 peaks <- distinct(peaks, chrom, start, end, .keep_all = TRUE)
 
-gtf <- import(opt$gtf)
-# gtf <- import('/temp/results/filter_gtf_gene_list/Gallus_gallus.GRCg6a.97_filtered.gtf')
+gtf_window <- import(opt$gtf)
+# gtf_window <- import('./results/filter_gtf_gene_list/Gallus_gallus.GRCg6a.97_filtered.gtf')
 
-# Add +- window (default 100kb) to GTF coordinates
-start(gtf) <- start(gtf)-opt$window
-end(gtf) <- start(gtf)+opt$window
+# Add +- window (default 100kb) to GTF coordinates - make sure that strand is considered when extracting start of gene - this is why we use resize
+start(gtf_window) <- start(resize(gtf_window, width = 1))-opt$window
+end(gtf_window) <- start(resize(gtf_window, width = 1))+opt$window
 
 # Set negative coordinates to 0
-start(gtf)[start(gtf) < 0] <- 0
+start(gtf_window)[start(gtf_window) < 0] <- 0
 
 # Create peak GRanges
 peaks_granges <- GRanges(seqnames=peaks$chrom, ranges=IRanges(start=peaks$start, end=peaks$end, names=peaks$peakid))
 
-# For each peak, identify overlapping peaks
-peak_gtf_hits <- lapply(1:length(peaks_granges), function(x) findOverlaps(gtf, peaks_granges[x,]))
+# For each peak, identify overlapping peaks. No need to use strand info as we are looking for any overlap from any direction
+peak_gtf_hits <- lapply(1:length(peaks_granges), function(x) findOverlaps(query = gtf_window, subject = peaks_granges[x,], ignore.strand=TRUE))
 names(peak_gtf_hits) <- names(peaks_granges)
 
-peak_gtf_hits <- lapply(peak_gtf_hits, function(row) {gtf[queryHits(row), c(opt$gene_id_col, opt$gene_name_col)]})
+peak_gtf_hits <- lapply(peak_gtf_hits, function(row) {gtf_window[queryHits(row), c(opt$gene_id_col, opt$gene_name_col)]})
 
 # Filter peaks which have at least one gtf hit
 peak_gtf_hits <- peak_gtf_hits[unlist(lapply(peak_gtf_hits, length)) != 0]
@@ -71,4 +71,3 @@ annotated_peaks <-annotated_peaks[, c('chrom', 'start', 'end', 'peakid', opt$gen
 # Save both annotated peaks and peak bed for motif screening
 write.table(annotated_peaks[,1:4], 'annotated_peaks.bed', row.names = FALSE, quote = FALSE, col.names = FALSE, sep = "\t")
 write.table(annotated_peaks, 'annotated_peaks.tsv', row.names = FALSE, quote = FALSE, col.names = TRUE, sep = "\t")
-
