@@ -13,6 +13,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 5. Sort peaks according to chromosome positioning
 
 6. Assign TSS to peaks:
+
    a) Assign TSS to peaks if they fall within CTCF sites flanking the peak of interest:
       1. For each peak retrieve nearest CTCF sites upstream (CTCF start site) and downstream (CTCF end site)
       2. Sort flanking CTCF coordinates
