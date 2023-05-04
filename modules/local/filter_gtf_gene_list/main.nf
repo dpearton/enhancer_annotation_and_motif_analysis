@@ -14,7 +14,7 @@ process FILTER_GTF_GENE_LIST {
     def prefix =  task.ext.prefix ?: gtf.toString() - '.gtf'
 
     """
-    awk -F'\t' '\$3 ~ /gene/' ${gtf} > temp.gtf
+    awk -F'\t' '\$3 ~ /CDS/' ${gtf} > temp.gtf
     grep -f ${gene_ids} temp.gtf > ${prefix}_filtered.gtf
     """
 }
