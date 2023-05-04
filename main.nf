@@ -14,6 +14,7 @@ if(params.debug) {log.info Headers.build_debug_param_summary(params, params.mono
 include { GUNZIP as GUNZIP_FASTA }                          from "$baseDir/modules/local/gunzip/main"
 include { GUNZIP as GUNZIP_GTF }                            from "$baseDir/modules/local/gunzip/main"
 include { EXTEND_PEAKS }                                    from "$baseDir/modules/local/extend_peaks/main"
+include { EXTRACT_GTF_CDS }                                 from "$baseDir/modules/local/extract_gtf_cds/main"
 include { FILTER_GTF_GENE_LIST }                            from "$baseDir/modules/local/filter_gtf_gene_list/main"
 include { ANNOTATE_PEAKS_TO_GTF }                           from "$baseDir/modules/local/annotate_peaks_to_gtf/main"
 include { ANNOTATE_PEAKS_TO_GTF_CTCF }                      from "$baseDir/modules/local/annotate_peaks_to_gtf_ctcf/main"
@@ -63,8 +64,14 @@ workflow {
         ch_gtf = file( params.gtf )
     }
     
-    // Filter gtf based on gene list
-    FILTER_GTF_GENE_LIST( ch_gtf, ch_gene_ids )
+    EXTRACT_GTF_CDS( ch_gtf )
+
+    // Filter gtf based on gene list if it is provided, otherwise annotate peaks using all genes
+    if (params.gene_ids){
+        ch_filtered_gtf = FILTER_GTF_GENE_LIST( EXTRACT_GTF_CDS.out.gtf, ch_gene_ids )
+    } else {
+        ch_filtered_gtf = EXTRACT_GTF_CDS.out.gtf
+    }
 
     // Conditionally extend peak length
     if (params.extend_peaks != 0) {
@@ -91,6 +98,8 @@ workflow {
         ch_peak_annotations_tsv = ANNOTATE_PEAKS_TO_GTF.out.tsv
     }
 
+    
+    if(params.run_motif_analysis) {
     // Get fasta sequences for peaks which are associated to genes in gene list
     BEDTOOLS_GETFASTA( ch_peak_annotations_bed, ch_fasta )
 
@@ -105,4 +114,5 @@ workflow {
 
     // Add gene annotations to motif hits
     ANNOTATE_MOTIF_HITS( ch_peak_annotations_tsv, MEMESUITE_FIMO.out )
+    }
 }
