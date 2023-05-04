@@ -66,7 +66,7 @@ peak_gtf_hits <- data.frame(peak_gtf_hits, row.names = c(opt$gene_id_col, opt$ge
 annotated_peaks <- merge(peaks, peak_gtf_hits, by.x = 'peakid', by.y = 'row.names')
 
 # Rearrange collumns
-annotated_peaks <-annotated_peaks[, c('chrom', 'start', 'end', 'peakid', opt$gene_id_col, opt$gene_name_col)]
+annotated_peaks <- annotated_peaks[, c('chrom', 'start', 'end', 'peakid', opt$gene_id_col, opt$gene_name_col)]
 
 # Save both annotated peaks and peak bed for motif screening
 write.table(annotated_peaks[,1:4], 'annotated_peaks.bed', row.names = FALSE, quote = FALSE, col.names = FALSE, sep = "\t")
