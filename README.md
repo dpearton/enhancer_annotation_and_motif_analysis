@@ -32,9 +32,13 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 
 2. Install any of [`Docker`](https://docs.docker.com/engine/installation/), [`Singularity`](https://www.sylabs.io/guides/3.0/user-guide/) (you can follow [this tutorial](https://singularity-tutorial.github.io/01-installation/)).
 
-3. Download the pipeline and test it on a minimal dataset with a single command:
+3. Download the pipeline
 
    ```bash
+   nextflow pull Streit-lab/enhancer_annotation_and_motif_analysis
+   ```
+
+4.  Test the pipeline on a minimal dataset with a single command:
    nextflow run Streit-lab/enhancer_annotation_and_motif_analysis -r main -profile test,docker --outdir output
    ```
 
