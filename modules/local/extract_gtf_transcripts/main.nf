@@ -1,19 +1,18 @@
-process FILTER_GTF_GENE_LIST {
+process EXTRACT_GTF_TRANSCRIPTS {
     label 'process_low'
 
     container "nfcore/base"
 
     input:
     path gtf
-    path gene_ids
 
     output:
-    path "*filtered.gtf", emit: gtf
+    path "*_transcript_extract.gtf", emit: gtf
 
     script:
     def prefix =  task.ext.prefix ?: gtf.toString() - '.gtf'
 
     """
-    grep -f ${gene_ids} ${gtf} > ${prefix}_filtered.gtf
+    awk -F'\t' '\$3 ~ /transcript/' ${gtf} > ${prefix}_transcript_extract.gtf
     """
 }
