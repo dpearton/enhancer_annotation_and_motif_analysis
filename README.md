@@ -39,9 +39,12 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
    ```
 
 4. Test the pipeline on a minimal dataset with a single command:
+
+   ```bash
    nextflow run Streit-lab/enhancer_annotation_and_motif_analysis -r main -profile test,docker --outdir output
    ```
-4. Start running your own analysis!
+
+5. Start running your own analysis!
 
    - Typical command for Streit-lab/enhancer_annotation_and_motif_analysis analysis:
 
@@ -56,6 +59,8 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
    ```
 
    Note that some form of configuration will be needed so that Nextflow knows how to fetch the required software. This is usually done in the form of a config profile (`YOURPROFILE` in the example command above). You can chain multiple config profiles in a comma-separated string.
+
+   An example config profile can be found [here](https://github.com/Streit-lab/enhancer_annotation_and_motif_analysis/blob/main/conf/test.config)
 
    > - The pipeline comes with config profiles called `docker`, `singularity` and `conda` which instruct the pipeline to use the named tool for software management. For example, `-profile test,docker`.
    > - If you are using `singularity`, please use the [`nf-core download`](https://nf-co.re/tools/#downloading-pipelines-for-offline-use) command to download images first, before running the pipeline. Setting the [`NXF_SINGULARITY_CACHEDIR` or `singularity.cacheDir`](https://www.nextflow.io/docs/latest/singularity.html?#singularity-docker-hub) Nextflow options enables you to store and re-use the images from a central location for future pipeline runs.
@@ -72,22 +77,22 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 
 `--peaks_bed`: *Required*. Path to peak file in BED format. Must contain four columns; chrom, start, end, peakid. [`Example file`](https://github.com/Streit-lab/enhancer_annotation_and_motif_analysis/blob/main/test_data/peaks.bed).
 
-`--gene_ids`: *Required*. List of gene ids present in GTF to screen for enhancers and motifs. One gene id per line. [`Example file`](https://github.com/Streit-lab/enhancer_annotation_and_motif_analysis/blob/main/test_data/peaks.bed).
+`--gene_ids`: *Optional*. List of gene ids present in GTF to screen for enhancers and motifs. One gene id per line. [`Example file`](https://github.com/Streit-lab/enhancer_annotation_and_motif_analysis/blob/main/test_data/peaks.bed). If --gene_ids is not specified, all gene_ids will be extracted from the GTF. Default = null.
 
 `--extend_peaks`: *Optional*. Number of bases by which to extend peaks (up and downstream). Default = 0.
 
 `--enhancer_window`: *Optional*. Distance from TSS in GTF within which enhancers are screened. Default = 50000.
 
-`--ctcf`: *Optional*. BED file containing co-ordinates for CTCF peaks to use for annotating enhancers to genes.
+`--ctcf`: *Optional*. BED file containing co-ordinates for CTCF peaks to use for annotating enhancers to genes. If this argument is specified, the pipeline will annotate enhancers using CTCF windows rather than using --enhancer_window. Default = null.
 
 `--markov_background`: *Optional*. Markov background model used to define base frequencies for motif screening. This is calculated by default from the provided --fasta input.
 
-`--fimo_pval`: *Optional*. p-value threshold used by FIMO for motif screening.
+`--fimo_pval`: *Optional*. p-value threshold used by FIMO for motif screening. Default = 0.0001.
 
 `--gtf_gene_name_col`: *Optional*. Entry in GTF corresponding to gene names. Default = 'gene_name'.
 
 `--gtf_gene_id_col`: *Optional*. Entry in GTF corresponding to gene names. Default = 'gene_id'.
 
+`--run_motif_analysis`: *Optional*. Boolean parameter which determines whether to run motif analysis after annotating enhancers. Default = true.
+
 `--outdir`: *Optional*. Directory to output results to. Default = 'results'.
-
-
