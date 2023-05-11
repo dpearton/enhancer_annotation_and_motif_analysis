@@ -14,25 +14,10 @@ jobs:
       - uses: actions/checkout@v2
       - name: Pull images
         run: |
-          lastrepo=""
-          lastseen=""
-          images=()
-
           for module in containers/*; do
-              if [ -f "$module"/Dockerfile ]; then
-                  images+=($(echo "alexthiery/${module##*/}:latest))
-              fi
-          done
-
-          for image in "${images[@]}"; do
-              # Parse repository name, we will remove the previous image if different
-              readarray -d : -t repository <<< "$image"
-              if [ "${lastseen}" != "" ] && [ "${repository[0]}" != "${lastseen}" ]; then
-                  printf "Removing image ${lastseen} to make room."
-                  docker rmi "${lastrepo}" || docker rmi "${lastseen}"
-              fi
-              lastrepo="${repository[0]}"
-              lastseen="${image}"
-              printf "Pulling $image\n";
-              docker pull "${image}"
+            if [ -f "$module"/Dockerfile ]; then
+              image="alexthiery/${module##*/}:latest"
+              printf "Pulling %s\n" "$image"
+              docker pull "$image"
+            fi
           done
