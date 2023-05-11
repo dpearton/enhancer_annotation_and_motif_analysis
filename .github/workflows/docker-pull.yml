@@ -1,8 +1,11 @@
 name: docker-pull
 
 on:
-  schedule:
-    - cron: 0 0 3 * *
+  push:
+    branches: 
+      - main
+  # schedule:
+  #   - cron: 0 0 3 * *
 
 jobs:
   docker-pull:
@@ -14,7 +17,7 @@ jobs:
           lastrepo=""
           lastseen=""
           images=()
-          
+
           for module in containers/*; do
               if [ -f "$module"/Dockerfile ]; then
                   images+=($(echo "alexthiery/${module##*/}:latest))
