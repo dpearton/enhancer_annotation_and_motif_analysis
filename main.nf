@@ -54,11 +54,11 @@ else {
 }
 
 Channel
-    .value(params.peaks_bed)
+    .from(file(params.peaks_bed, checkIfExists:true))
     .set{ch_peak_bed}
 
 Channel
-    .value(params.gene_ids)
+    .from(file(params.gene_ids, checkIfExists:true))
     .set{ch_gene_ids}
 
 /*------------------------------------------------------------------------------------
