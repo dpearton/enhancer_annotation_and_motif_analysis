@@ -41,7 +41,10 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 4. Test the pipeline on a minimal dataset with a single command:
 
    ```bash
-   nextflow run Streit-lab/enhancer_annotation_and_motif_analysis -r main -profile test,docker --outdir output
+   nextflow run Streit-lab/enhancer_annotation_and_motif_analysis \
+      -r main \
+      -profile test,docker \
+      --outdir output
    ```
 
 5. Start running your own analysis!
@@ -49,13 +52,21 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
    - Typical command for Streit-lab/enhancer_annotation_and_motif_analysis analysis:
 
    ```bash
-   nextflow run Streit-lab/enhancer_annotation_and_motif_analysis --fasta <FASTA_PATH_OR_URL> --gtf <GTF_PATH_OR_URL> --motif_matrix <MEME_MOTIF_FILE> --peaks_bed <PEAK_BED_FILE> -profile <docker/singularity/conda>
+   nextflow run Streit-lab/enhancer_annotation_and_motif_analysis \
+      -r main \
+      --fasta <FASTA_PATH_OR_URL> \
+      --gtf <GTF_PATH_OR_URL> \
+      --peaks_bed <PEAK_BED_FILE> \
+      -profile <docker/singularity/conda>
    ```
 
    OR
 
    ```bash
-   nextflow run Streit-lab/enhancer_annotation_and_motif_analysis -c <YOURPROFILE> -profile <docker/singularity/conda>
+   nextflow run Streit-lab/enhancer_annotation_and_motif_analysis \
+      -r main \
+      -c <YOURPROFILE> \
+      -profile <docker/singularity/conda>
    ```
 
    Note that some form of configuration will be needed so that Nextflow knows how to fetch the required software. This is usually done in the form of a config profile (`YOURPROFILE` in the example command above). You can chain multiple config profiles in a comma-separated string.
@@ -71,21 +82,21 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 
 `--fasta`: *Required*. Path or URL to fasta file, can be gzipped.
 
-`--gtf`: *Required*. Path or URL to GTF file, can be gzipped.
+`--gtf` or `--gff`: *Required*. Path or URL to GTF or GFF file, can be gzipped.
 
-`--motif_matrix`: *Required*. Path to matrix file in [`meme`](https://meme-suite.org/meme/doc/meme-format.html) format. [`Example file`](https://github.com/Streit-lab/enhancer_annotation_and_motif_analysis/blob/main/test_data/six1_motifs.txt). 
+`--peaks_bed`: *Required*. Path to peak file in BED format. First four columns must contain; chrom, start, end, peakid. [`Example file`](https://github.com/Streit-lab/enhancer_annotation_and_motif_analysis/blob/main/test_data/peaks.bed).
 
-`--peaks_bed`: *Required*. Path to peak file in BED format. Must contain four columns; chrom, start, end, peakid. [`Example file`](https://github.com/Streit-lab/enhancer_annotation_and_motif_analysis/blob/main/test_data/peaks.bed).
-
-`--gene_ids`: *Optional*. List of gene ids present in GTF to screen for enhancers and motifs. One gene id per line. [`Example file`](https://github.com/Streit-lab/enhancer_annotation_and_motif_analysis/blob/main/test_data/peaks.bed). If --gene_ids is not specified, all gene_ids will be extracted from the GTF or GFF. Default = null.
+`--gene_ids`: *Optional*. List of gene ids present in GTF to screen for enhancers and motifs. One gene id per line. [`Example file`](https://github.com/Streit-lab/enhancer_annotation_and_motif_analysis/blob/main/test_data/gene_ids.txt). If --gene_ids is not specified, all gene_ids will be extracted from the GTF or GFF. Default = null.
 
 `--extend_peaks`: *Optional*. Number of bases by which to extend peaks (up and downstream). Default = 0.
 
 `--enhancer_window`: *Optional*. Distance from TSS in GTF or GFF within which enhancers are screened. Default = 50000.
 
-`--ctcf`: *Optional*. BED file containing co-ordinates for CTCF peaks to use for annotating enhancers to genes. If this argument is specified, the pipeline will annotate enhancers using CTCF windows rather than using --enhancer_window. Default = null.
+`--ctcf`: *Optional*. BED file containing co-ordinates for CTCF peaks to use for annotating enhancers to genes. If this argument is specified, the pipeline will annotate enhancers using CTCF windows rather than using `--enhancer_window`. Default = null.
 
-`--markov_background`: *Optional*. Markov background model used to define base frequencies for motif screening. This is calculated by default from the provided --fasta input.
+`--motif_matrix`: *Optional*. By default the pipeline will screen against all motifs in the JASPAR core vertebrate non-redundant database `--motif_matrix jaspar_core_vert_nonredundant_motifs`. The redundant database can also be selected using `--motif_matrix jaspar_core_vert_redundant_motifs`. Alternatively, a path to matrix file in [`meme`](https://meme-suite.org/meme/doc/meme-format.html) format can also be provided. [`Example file`](https://github.com/Streit-lab/enhancer_annotation_and_motif_analysis/blob/main/test_data/six1_motifs.txt).
+
+`--markov_background`: *Optional*. Markov background model used to define base frequencies for motif screening. This is calculated by default from the provided `--fasta` input.
 
 `--fimo_pval`: *Optional*. p-value threshold used by FIMO for motif screening. Default = 0.0001.
 
