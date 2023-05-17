@@ -13,6 +13,6 @@ process EXTRACT_GTF_TRANSCRIPTS {
     def prefix =  task.ext.prefix ?: gtf.toString() - '.gtf'
 
     """
-    awk -F'\t' '\$3 ~ /transcript/' ${gtf} > ${prefix}_transcript_extract.gtf
+    awk -F'\t' '\$3 ~ /transcript|mRNA/' ${gtf} > ${prefix}_transcript_extract.gtf
     """
 }
