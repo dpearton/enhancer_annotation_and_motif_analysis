@@ -53,8 +53,8 @@ Set channels
 
 ch_motif_matrix = params.motif_matrix ? Channel.fromPath( params.motif_matrix, checkIfExists: true ) : ch_jaspar_core_vert_nonredundant_motifs
 
-if(params.motif_matrix == jaspar_core_vert_nonredundant_motifs) {ch_motif_matrix = ch_jaspar_core_vert_nonredundant_motifs}
-if(params.motif_matrix == jaspar_core_vert_redundant_motifs)    {ch_motif_matrix = ch_jaspar_core_vert_redundant_motifs}
+if(params.motif_matrix == 'jaspar_core_vert_nonredundant_motifs') {ch_motif_matrix = ch_jaspar_core_vert_nonredundant_motifs}
+if(params.motif_matrix == 'jaspar_core_vert_redundant_motifs')    {ch_motif_matrix = ch_jaspar_core_vert_redundant_motifs}
 
 
 Channel
