@@ -19,15 +19,17 @@ option_list <- list(
 opt_parser = OptionParser(option_list = option_list)
 opt <- parse_args(opt_parser)
 
-peaks <- read.csv(opt$peak_bed, stringsAsFactors = FALSE, col.names = c('chrom', 'start', 'end', 'peakid'), sep = "\t")
-# peaks <- read.csv('/temp/test_data/peaks.bed', stringsAsFactors = FALSE, col.names = c('chrom', 'start', 'end', 'peakid'), sep = "\t")
-# peaks <- read.csv('/temp/results/extend_peaks/extended_peaks.bed', stringsAsFactors = FALSE, col.names = c('chrom', 'start', 'end', 'peakid'), sep = "\t")
+peaks <- read.csv(opt$peak_bed, stringsAsFactors = FALSE, sep = "\t", header = FALSE)[,1:4]
+# peaks <- read.csv('/home/rstudio/test_data/test_lamprey_atac_peaks.bed', stringsAsFactors = FALSE, sep = "\t", header = FALSE)[,1:4]
+
+colnames(peaks) <- c('chrom', 'start', 'end', 'peakid')
 
 # keep only unique peaks (incase bed contains duplicated peaks - keep first hit)
 peaks <- distinct(peaks, chrom, start, end, .keep_all = TRUE)
 
 gtf_window <- import(opt$gtf)
-# gtf_window <- import('./results/filter_gtf_gene_list/Gallus_gallus.GRCg6a.97_filtered.gtf')
+# gtf_window <- import('/home/rstudio/results/filter_gtf_gene_list/pmz.genes_transcript_extract_filtered.gtf')
+
 
 # Add +- window (default 100kb) to GTF coordinates - make sure that strand is considered when extracting start of gene - this is why we use resize
 start(gtf_window) <- start(resize(gtf_window, width = 1))-opt$window
