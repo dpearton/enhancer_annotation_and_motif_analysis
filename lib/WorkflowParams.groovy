@@ -64,7 +64,7 @@ class WorkflowParams {
     private static void motifWarn(log) {
         log.warn "=============================================================================\n" +
             "  --motif_matrix parameter has not been provided.\n" +
-            "  By default, the JASPAR core vertebrate redundant pfms collection will be used.\n" +
+            "  By default, the JASPAR core vertebrate non-redundant pfms collection will be used.\n" +
             "==================================================================================="
     }
 }
