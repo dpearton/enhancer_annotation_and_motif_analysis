@@ -20,7 +20,8 @@ opt_parser = OptionParser(option_list = option_list)
 opt <- parse_args(opt_parser)
 
 peaks <- read.csv(opt$peak_bed, stringsAsFactors = FALSE, sep = "\t", header = FALSE)[,1:4]
-# peaks <- read.csv('/home/rstudio/test_data/test_lamprey_atac_peaks.bed', stringsAsFactors = FALSE, sep = "\t", header = FALSE)[,1:4]
+# peaks <- read.csv('./test_data/test_lamprey_atac_peaks.bed', stringsAsFactors = FALSE, sep = "\t", header = FALSE)[,1:4]
+# peaks <- read.csv('./test_data/sorted_intersected_ATAC_K27ac.bed', stringsAsFactors = FALSE, sep = "\t", header = FALSE)[,1:4]
 
 colnames(peaks) <- c('chrom', 'start', 'end', 'peakid')
 
@@ -28,8 +29,8 @@ colnames(peaks) <- c('chrom', 'start', 'end', 'peakid')
 peaks <- distinct(peaks, chrom, start, end, .keep_all = TRUE)
 
 gtf_window <- import(opt$gtf)
-# gtf_window <- import('/home/rstudio/results/filter_gtf_gene_list/pmz.genes_transcript_extract_filtered.gtf')
-
+# gtf_window <- import('./results/filter_gtf_gene_list/pmz.genes_transcript_extract_filtered.gtf')
+# gtf_window <- import('./test_data/Gallus_gallus.GRCg6a.97_transcript_extract_filtered.gtf')
 
 # Add +- window (default 100kb) to GTF coordinates - make sure that strand is considered when extracting start of gene - this is why we use resize
 start(gtf_window) <- start(resize(gtf_window, width = 1))-opt$window
@@ -52,7 +53,7 @@ peak_gtf_hits <- peak_gtf_hits[unlist(lapply(peak_gtf_hits, length)) != 0]
 
 # extract gene ids and gene names for each peak
 peak_gtf_hits <-lapply(peak_gtf_hits, function(x) {
-  out <- as.data.frame(x)[,c(opt$gene_id_col, opt$gene_name_col)]
+  out <- as.data.frame(x)[,c(opt$gene_id_col, opt$gene_name_col)] %>% distinct()
   gene_id = paste(out[,opt$gene_id_col], collapse = "|")
   gene_name = paste(out[,opt$gene_name_col], collapse = "|")
   return(c(gene_id, gene_name))
