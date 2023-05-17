@@ -85,28 +85,65 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 
 </br>
 
-`--gtf` or `--gff`: *Required*. Path or URL to GTF or GFF file, can be gzipped.
+`--gtf` or `--gff`
+   > *Required*. Path or URL to GTF or GFF file, can be gzipped.
 
-`--peaks_bed`: *Required*. Path to peak file in BED format. First four columns must contain; chrom, start, end, peakid. [`Example file`](https://github.com/Streit-lab/enhancer_annotation_and_motif_analysis/blob/main/test_data/peaks.bed).
 
-`--gene_ids`: *Optional*. List of gene ids present in GTF to screen for enhancers and motifs. One gene id per line. [`Example file`](https://github.com/Streit-lab/enhancer_annotation_and_motif_analysis/blob/main/test_data/gene_ids.txt). If --gene_ids is not specified, all gene_ids will be extracted from the GTF or GFF. Default = null.
 
-`--extend_peaks`: *Optional*. Number of bases by which to extend peaks (up and downstream). Default = 0.
+`--peaks_bed`
+   > *Required*. Path to peak file in BED format. First four columns must contain; chrom, start, end, peakid. [`Example file`](https://github.com/Streit-lab/enhancer_annotation_and_motif_analysis/blob/main/test_data/peaks.bed).
 
-`--enhancer_window`: *Optional*. Distance from TSS in GTF or GFF within which enhancers are screened. Default = 50000.
+</br>
 
-`--ctcf`: *Optional*. BED file containing co-ordinates for CTCF peaks to use for annotating enhancers to genes. If this argument is specified, the pipeline will annotate enhancers using CTCF windows rather than using `--enhancer_window`. Default = null.
+`--gene_ids`
+   > *Optional*. List of gene ids present in GTF to screen for enhancers and motifs. One gene id per line. [`Example file`](https://github.com/Streit-lab/enhancer_annotation_and_motif_analysis/blob/main/test_data/gene_ids.txt). If --gene_ids is not specified, all gene_ids will be extracted from the GTF or GFF. Default = null.
 
-`--motif_matrix`: *Optional*. By default the pipeline will screen against all motifs in the JASPAR core vertebrate non-redundant database `--motif_matrix jaspar_core_vert_nonredundant_motifs`. The redundant database can also be selected using `--motif_matrix jaspar_core_vert_redundant_motifs`. Alternatively, a path to matrix file in [`meme`](https://meme-suite.org/meme/doc/meme-format.html) format can also be provided. [`Example file`](https://github.com/Streit-lab/enhancer_annotation_and_motif_analysis/blob/main/test_data/six1_motifs.txt).
+</br>
 
-`--markov_background`: *Optional*. Markov background model used to define base frequencies for motif screening. This is calculated by default from the provided `--fasta` input.
+`--extend_peaks`
+   > *Optional*. Number of bases by which to extend peaks (up and downstream). Default = 0.
 
-`--fimo_pval`: *Optional*. p-value threshold used by FIMO for motif screening. Default = 0.0001.
+</br>
 
-`--gene_name_col`: *Optional*. Entry in GTF or GFF corresponding to gene names. Default = 'gene_name'.
+`--enhancer_window`
+   > *Optional*. Distance from TSS in GTF or GFF within which enhancers are screened. Default = 50000.
 
-`--gene_id_col`: *Optional*. Entry in GTF or GFF corresponding to gene IDs. Default = 'gene_id'.
+</br>
 
-`--skip_motif_analysis`: *Optional*. Boolean parameter which determines whether to run motif analysis after annotating enhancers. Default = false.
+`--ctcf`
+   > *Optional*. BED file containing co-ordinates for CTCF peaks to use for annotating enhancers to genes. If this argument is specified, the pipeline will annotate enhancers using CTCF windows rather than using `--enhancer_window`. Default = null.
 
-`--outdir`: *Optional*. Directory to output results to. Default = 'results'.
+</br>
+
+`--motif_matrix`
+   > *Optional*. By default the pipeline will screen against all motifs in the JASPAR core vertebrate non-redundant database `--motif_matrix jaspar_core_vert_nonredundant_motifs`. The redundant database can also be selected using `--motif_matrix jaspar_core_vert_redundant_motifs`. Alternatively, a path to matrix file in [`meme`](https://meme-suite.org/meme/doc/meme-format.html) format can also be provided. [`Example file`](https://github.com/Streit-lab/enhancer_annotation_and_motif_analysis/blob/main/test_data/six1_motifs.txt).
+
+</br>
+
+`--markov_background`
+   > *Optional*. Markov background model used to define base frequencies for motif screening. This is calculated by default from the provided `--fasta` input.
+
+</br>
+
+`--fimo_pval`
+   > *Optional*. p-value threshold used by FIMO for motif screening. Default = 0.0001.
+
+</br>
+
+`--gene_name_col`
+   > *Optional*. Entry in GTF or GFF corresponding to gene names. Default = 'gene_name'.
+
+</br>
+
+`--gene_id_col`
+   > *Optional*. Entry in GTF or GFF corresponding to gene IDs. Default = 'gene_id'.
+
+</br>
+
+`--skip_motif_analysis`
+   > *Optional*. Boolean parameter which determines whether to run motif analysis after annotating enhancers. Default = false.
+
+</br>
+
+`--outdir`
+   > *Optional*. Directory to output results to. Default = 'results'.
