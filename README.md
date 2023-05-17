@@ -80,7 +80,8 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 
 ## Pipeline parameters
 
-`--fasta`: *Required*. Path or URL to fasta file, can be gzipped.
+`--fasta`
+   > *Required*. Path or URL to fasta file, can be gzipped.
 
 `--gtf` or `--gff`: *Required*. Path or URL to GTF or GFF file, can be gzipped.
 
