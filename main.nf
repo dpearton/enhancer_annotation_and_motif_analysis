@@ -70,7 +70,7 @@ workflow {
     if (params.fasta.endsWith(".gz")) {
         ch_fasta    = GUNZIP_FASTA ( params.fasta ).gunzip
     } else {
-        ch_fasta = Channel.from(file( params.fasta ))
+        ch_fasta = file( params.fasta )
     }
 
     SAMTOOLS_FAIDX(ch_fasta)
@@ -80,13 +80,13 @@ workflow {
         if (params.gtf.endsWith('.gz')) {
             ch_gtf      = GUNZIP_GTF ( params.gtf ).gunzip
         } else {
-            ch_gtf      = Channel.from(file(params.gtf))
+            ch_gtf      = file(params.gtf)
         }
     } else if (params.gff) {
         if (params.gff.endsWith('.gz')) {
             ch_gff      = GUNZIP_GFF ( params.gff ).gunzip
         } else {
-            ch_gff      = Channel.from(file(params.gff))
+            ch_gff      = file(params.gff)
         }
         ch_gtf          = GFFREAD ( ch_gff ).gtf
     }
