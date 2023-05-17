@@ -6,13 +6,11 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 
 ## Pipeline summary
 
-1. Conditionally unzip genome (--fasta) and GTF (--gtf) files
+1. Conditionally unzip genome (--fasta) and GTF/GFF (--gtf or --gff) files
 2. Index genome in order to retrieve chromosome lengths
-3. Filter genes of interest (--gene_list) from GTF and filter gene biotype entries in GTF
+3. Filter genes of interest (--gene_list) from GTF and filter gene biotype entries in GTF/GFF
 4. Conditionally extend length of peaks (--peaks) by a given length (--extend_peaks)
-5. Sort peaks according to chromosome positioning
-
-6. Assign TSS to peaks:
+5. Assign TSS to peaks:
 
    a) Assign TSS to peaks if they fall within CTCF sites flanking the peak of interest:
       1. For each peak retrieve nearest CTCF sites upstream (CTCF start site) and downstream (CTCF end site)
@@ -21,10 +19,10 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 
    b) Assign TSS to peaks if they fall within an x.kb window of the peak of interest
 
-7. Retrieve filtered peak fasta sequences
-8. Calculate background base frequencies for motif screening
-9. Identify motif binding sites in peaks ([`fimo`](https://meme-suite.org/meme/doc/fimo.html))
-10. Annotate peak-motif file with nearby genes
+6. Retrieve filtered peak fasta sequences
+7. Calculate background base frequencies for motif screening
+8. Identify motif binding sites in peaks ([`fimo`](https://meme-suite.org/meme/doc/fimo.html))
+9. Annotate peak-motif file with nearby genes
 
 ## Quick Start
 
