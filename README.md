@@ -83,6 +83,8 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 `--fasta`
    > *Required*. Path or URL to fasta file, can be gzipped.
 
+</br>
+
 `--gtf` or `--gff`: *Required*. Path or URL to GTF or GFF file, can be gzipped.
 
 `--peaks_bed`: *Required*. Path to peak file in BED format. First four columns must contain; chrom, start, end, peakid. [`Example file`](https://github.com/Streit-lab/enhancer_annotation_and_motif_analysis/blob/main/test_data/peaks.bed).
