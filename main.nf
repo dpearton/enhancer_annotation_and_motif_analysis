@@ -15,6 +15,12 @@ WorkflowParams.initialise(params, log)
 // Print all params
 // WorkflowMain.initialise(workflow, params, log)
 
+
+// Motif files
+ch_jaspar_core_vert_nonredundant_motifs             = file("$projectDir/assets/JASPAR2022_CORE_vertebrates_non-redundant_pfms_meme.txt", checkIfExists: true)
+ch_jaspar_core_vert_redundant_motifs                = file("$projectDir/assets/JASPAR2022_CORE_vertebrates_redundant_pfms_meme.txt", checkIfExists: true)
+
+
 /*-----------------------------------------------------------------------------------------------------------------------------
 Log
 -------------------------------------------------------------------------------------------------------------------------------*/
@@ -25,6 +31,8 @@ if(params.debug) {log.info Headers.build_debug_param_summary(params, params.mono
 --------------------------------------------------------------------------------------*/
 include { GUNZIP as GUNZIP_FASTA }                          from "$baseDir/modules/local/gunzip/main"
 include { GUNZIP as GUNZIP_GTF }                            from "$baseDir/modules/local/gunzip/main"
+include { GUNZIP as GUNZIP_GFF }                            from "$baseDir/modules/local/gunzip/main"
+include { GFFREAD }                                         from "$baseDir/modules/nf-core/gffread/main"
 include { EXTEND_PEAKS }                                    from "$baseDir/modules/local/extend_peaks/main"
 include { EXTRACT_GTF_TRANSCRIPTS }                         from "$baseDir/modules/local/extract_gtf_transcripts/main"
 include { FILTER_GTF_GENE_LIST }                            from "$baseDir/modules/local/filter_gtf_gene_list/main"
@@ -42,6 +50,12 @@ include { ANNOTATE_MOTIF_HITS }                             from "$baseDir/modul
 /*------------------------------------------------------------------------------------
 Set channels
 --------------------------------------------------------------------------------------*/
+
+ch_motif_matrix = params.motif_matrix ? Channel.fromPath( params.motif_matrix, checkIfExists: true ) : ch_jaspar_core_vert_nonredundant_motifs
+
+if(params.motif_matrix == jaspar_core_vert_nonredundant_motifs) {ch_motif_matrix = ch_jaspar_core_vert_nonredundant_motifs}
+if(params.motif_matrix == jaspar_core_vert_redundant_motifs)    {ch_motif_matrix = ch_jaspar_core_vert_redundant_motifs}
+
 
 Channel
     .value(params.motif_matrix)
@@ -69,12 +83,22 @@ workflow {
 
     SAMTOOLS_FAIDX(ch_fasta)
 
-    // Uncompress genome gtf file if required
-    if (params.fasta.endsWith(".gz")) {
-        ch_gtf    = GUNZIP_GTF ( params.gtf ).gunzip
-    } else {
-        ch_gtf = file( params.gtf )
+    // Uncompress GTF annotation file or create from GFF3 if required
+    if (params.gtf) {
+        if (params.gtf.endsWith('.gz')) {
+            ch_gtf      = GUNZIP_GTF ( params.gtf ).gunzip
+        } else {
+            ch_gtf      = file(params.gtf)
+        }
+    } else if (params.gff) {
+        if (params.gff.endsWith('.gz')) {
+            ch_gff      = GUNZIP_GFF ( params.gff ).gunzip
+        } else {
+            ch_gff      = file(params.gff)
+        }
+        ch_gtf          = GFFREAD ( ch_gff ).gtf
     }
+
     
     EXTRACT_GTF_TRANSCRIPTS( ch_gtf )
 
