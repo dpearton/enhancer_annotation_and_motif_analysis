@@ -13,18 +13,7 @@ nextflow.enable.dsl=2
 WorkflowParams.initialise(params, log)
 
 // Print all params
-// WorkflowMain.initialise(workflow, params, log)
-
-
-// Motif files
-ch_jaspar_core_vert_nonredundant_motifs             = file("$projectDir/assets/JASPAR2022_CORE_vertebrates_non-redundant_pfms_meme.txt", checkIfExists: true)
-ch_jaspar_core_vert_redundant_motifs                = file("$projectDir/assets/JASPAR2022_CORE_vertebrates_redundant_pfms_meme.txt", checkIfExists: true)
-
-
-/*-----------------------------------------------------------------------------------------------------------------------------
-Log
--------------------------------------------------------------------------------------------------------------------------------*/
-if(params.debug) {log.info Headers.build_debug_param_summary(params, params.monochrome_logs)}
+WorkflowMain.initialise(workflow, params, log)
 
 /*------------------------------------------------------------------------------------*/
 /* Module inclusions
@@ -51,15 +40,18 @@ include { ANNOTATE_MOTIF_HITS }                             from "$baseDir/modul
 Set channels
 --------------------------------------------------------------------------------------*/
 
-ch_motif_matrix = params.motif_matrix ? Channel.fromPath( params.motif_matrix, checkIfExists: true ) : ch_jaspar_core_vert_nonredundant_motifs
+// Set motif_matrix to jaspar non redundant database if not provided
+motif_matrix = params.motif_matrix ? params.motif_matrix : 'jaspar_core_vert_nonredundant_motifs'
 
-if(params.motif_matrix == 'jaspar_core_vert_nonredundant_motifs') {ch_motif_matrix = ch_jaspar_core_vert_nonredundant_motifs}
-if(params.motif_matrix == 'jaspar_core_vert_redundant_motifs')    {ch_motif_matrix = ch_jaspar_core_vert_redundant_motifs}
-
-
-Channel
-    .value(params.motif_matrix)
-    .set{ch_motif_matrix}
+if(motif_matrix == 'jaspar_core_vert_nonredundant_motifs') {
+    ch_motif_matrix = Channel.from( file("$projectDir/assets/JASPAR2022_CORE_vertebrates_non-redundant_pfms_meme.txt", checkIfExists: true))
+} 
+else if(motif_matrix == 'jaspar_core_vert_redundant_motifs') {
+    ch_motif_matrix = Channel.from( file("$projectDir/assets/JASPAR2022_CORE_vertebrates_redundant_pfms_meme.txt", checkIfExists: true))
+} 
+else {
+    ch_motif_matrix = Channel.from( file(motif_matrix, checkIfExists:true ))
+}
 
 Channel
     .value(params.peaks_bed)
@@ -135,7 +127,7 @@ workflow {
     }
 
     
-    if(params.run_motif_analysis) {
+    if(!params.skip_motif_analysis) {
     // Get fasta sequences for peaks which are associated to genes in gene list
     BEDTOOLS_GETFASTA( ch_peak_annotations_bed, ch_fasta )
 

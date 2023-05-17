@@ -32,7 +32,7 @@ class WorkflowParams {
             geneIdsWarn(log)
         }
 
-        if (params.run_motif_analysis && !params.motif_matrix) {
+        if (!params.skip_motif_analysis && !params.motif_matrix) {
             motifWarn(log)
         }
     }

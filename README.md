@@ -77,11 +77,11 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 
 `--peaks_bed`: *Required*. Path to peak file in BED format. Must contain four columns; chrom, start, end, peakid. [`Example file`](https://github.com/Streit-lab/enhancer_annotation_and_motif_analysis/blob/main/test_data/peaks.bed).
 
-`--gene_ids`: *Optional*. List of gene ids present in GTF to screen for enhancers and motifs. One gene id per line. [`Example file`](https://github.com/Streit-lab/enhancer_annotation_and_motif_analysis/blob/main/test_data/peaks.bed). If --gene_ids is not specified, all gene_ids will be extracted from the GTF. Default = null.
+`--gene_ids`: *Optional*. List of gene ids present in GTF to screen for enhancers and motifs. One gene id per line. [`Example file`](https://github.com/Streit-lab/enhancer_annotation_and_motif_analysis/blob/main/test_data/peaks.bed). If --gene_ids is not specified, all gene_ids will be extracted from the GTF or GFF. Default = null.
 
 `--extend_peaks`: *Optional*. Number of bases by which to extend peaks (up and downstream). Default = 0.
 
-`--enhancer_window`: *Optional*. Distance from TSS in GTF within which enhancers are screened. Default = 50000.
+`--enhancer_window`: *Optional*. Distance from TSS in GTF or GFF within which enhancers are screened. Default = 50000.
 
 `--ctcf`: *Optional*. BED file containing co-ordinates for CTCF peaks to use for annotating enhancers to genes. If this argument is specified, the pipeline will annotate enhancers using CTCF windows rather than using --enhancer_window. Default = null.
 
@@ -89,10 +89,10 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 
 `--fimo_pval`: *Optional*. p-value threshold used by FIMO for motif screening. Default = 0.0001.
 
-`--gtf_gene_name_col`: *Optional*. Entry in GTF corresponding to gene names. Default = 'gene_name'.
+`--gene_name_col`: *Optional*. Entry in GTF or GFF corresponding to gene names. Default = 'gene_name'.
 
-`--gtf_gene_id_col`: *Optional*. Entry in GTF corresponding to gene names. Default = 'gene_id'.
+`--gene_id_col`: *Optional*. Entry in GTF or GFF corresponding to gene IDs. Default = 'gene_id'.
 
-`--run_motif_analysis`: *Optional*. Boolean parameter which determines whether to run motif analysis after annotating enhancers. Default = true.
+`--skip_motif_analysis`: *Optional*. Boolean parameter which determines whether to run motif analysis after annotating enhancers. Default = false.
 
 `--outdir`: *Optional*. Directory to output results to. Default = 'results'.

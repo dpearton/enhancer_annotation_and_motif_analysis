@@ -26,4 +26,24 @@ class WorkflowMain {
         summary_log += NfcoreTemplate.dashedLine(params.monochrome_logs)
         return summary_log
     }
+
+
+    //
+    // Validate parameters and print summary to screen
+    //
+    public static void initialise(workflow, params, log) {
+        // Print help to screen if required
+        if (params.help) {
+            log.info help(workflow, params, log)
+            System.exit(0)
+        }
+
+        // // Validate workflow parameters via the JSON schema
+        // if (params.validate_params) {
+        //     NfcoreSchema.validateParameters(workflow, params, log)
+        // }
+
+        // Print parameter summary log to screen
+        log.info paramsSummaryLog(workflow, params, log)
+    }
 }
