@@ -25,6 +25,9 @@ include { GFFREAD }                                         from "$baseDir/modul
 include { EXTEND_PEAKS }                                    from "$baseDir/modules/local/extend_peaks/main"
 include { EXTRACT_GTF_TRANSCRIPTS }                         from "$baseDir/modules/local/extract_gtf_transcripts/main"
 include { FILTER_GTF_GENE_LIST }                            from "$baseDir/modules/local/filter_gtf_gene_list/main"
+include { EXTRACT_GTF_WINDOW_COORDINATES }                  from "$baseDir/modules/local/extract_gtf_window_coordinates/main"
+include { INTERSECT_PEAKS_GTF }                             from "$baseDir/modules/local/intersect_peaks_gtf/main"
+include { COLLAPSE_BEDTOOLS_INTERSECT }                     from "$baseDir/modules/local/collapse_bedtools_intersect/main"
 include { ANNOTATE_PEAKS_TO_GTF }                           from "$baseDir/modules/local/annotate_peaks_to_gtf/main"
 include { ANNOTATE_PEAKS_TO_GTF_CTCF }                      from "$baseDir/modules/local/annotate_peaks_to_gtf_ctcf/main"
 include { EXTRACT_FLANKING_CTCF }                           from "$baseDir/modules/local/extract_flanking_ctcf/main"
@@ -120,10 +123,14 @@ workflow {
         ch_peak_annotations_tsv = ANNOTATE_PEAKS_TO_GTF_CTCF.out.tsv
 
     } else {
-        ANNOTATE_PEAKS_TO_GTF( ch_peak_bed, FILTER_GTF_GENE_LIST.out.gtf )
+        EXTRACT_GTF_WINDOW_COORDINATES( FILTER_GTF_GENE_LIST.out.gtf, SAMTOOLS_FAIDX.out.fai )
+        INTERSECT_PEAKS_GTF( ch_peak_bed, EXTRACT_GTF_WINDOW_COORDINATES.out.bed )
+        COLLAPSE_BEDTOOLS_INTERSECT( INTERSECT_PEAKS_GTF.out.bed )
 
-        ch_peak_annotations_bed = ANNOTATE_PEAKS_TO_GTF.out.bed
-        ch_peak_annotations_tsv = ANNOTATE_PEAKS_TO_GTF.out.tsv
+        // ANNOTATE_PEAKS_TO_GTF( ch_peak_bed, FILTER_GTF_GENE_LIST.out.gtf )
+
+        ch_peak_annotations_bed = COLLAPSE_BEDTOOLS_INTERSECT.out.bed
+        ch_peak_annotations_tsv = COLLAPSE_BEDTOOLS_INTERSECT.out.tsv
     }
 
     

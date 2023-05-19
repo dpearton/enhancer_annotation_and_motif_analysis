@@ -32,7 +32,7 @@ gtf_window <- import(opt$gtf)
 # gtf_window <- import('./results/filter_gtf_gene_list/pmz.genes_transcript_extract_filtered.gtf')
 # gtf_window <- import('./test_data/Gallus_gallus.GRCg6a.97_transcript_extract_filtered.gtf')
 
-# Add +- window (default 100kb) to GTF coordinates - make sure that strand is considered when extracting start of gene - this is why we use resize
+# Add +- window (default 50kb) to GTF coordinates - make sure that strand is considered when extracting start of gene - this is why we use resize
 start(gtf_window) <- start(resize(gtf_window, width = 1))-opt$window
 end(gtf_window) <- start(resize(gtf_window, width = 1))+opt$window
 
