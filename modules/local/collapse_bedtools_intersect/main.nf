@@ -12,8 +12,6 @@ process COLLAPSE_BEDTOOLS_INTERSECT {
 
     script:
 
-    script:
-
     """
     Rscript $baseDir/bin/collapse_bedtools_intersect.R \\
         --peak_bed ${peaks}

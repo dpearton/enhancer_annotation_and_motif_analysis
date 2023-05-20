@@ -14,7 +14,7 @@ opt <- parse_args(opt_parser)
 
 dat <- read.table(opt$peak_bed)
 
-dat <- dat[,c(1:4,ncol(dat)-1:ncol(dat))]
+dat <- dat[,c(1:4,ncol(dat)-1,ncol(dat))]
 
 colnames(dat) <- c('chrom', 'start', 'end', 'peakid', 'gene_id', 'gene_name')
 
