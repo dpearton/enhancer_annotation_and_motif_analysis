@@ -18,20 +18,12 @@ dat <- dat[,c(1:4,ncol(dat)-1,ncol(dat))]
 
 colnames(dat) <- c('chrom', 'start', 'end', 'peakid', 'gene_id', 'gene_name')
 
-# Concatenate gene names
-# dat <- dat %>%
-# distinct() %>% 
-# group_by(peakid) %>% 
-# dplyr::reframe(chrom=chrom, start=start, end=end, peakid=peakid, gene_id = paste0(gene_id, collapse="|"), gene_name = paste0(gene_name, collapse="|")) %>%
-# distinct() %>%
-# dplyr::relocate(peakid, .after=end)
-
 dat <- dat %>%
-distinct() %>% 
 group_by(peakid) %>%
-summarise(chrom=paste0(chrom, collapse="|"), start=paste0(start, collapse="|"), end=paste0(end, collapse="|"), peakid=paste0(peakid, collapse="|"), gene_id = paste0(gene_id, collapse="|"), gene_name = paste0(gene_name, collapse="|")) %>%
-distinct() %>%
-dplyr::relocate(peakid, .after=end)
+distinct() %>% 
+mutate(gene_id = paste0(gene_id, collapse="|")) %>% 
+mutate(gene_name = paste0(gene_name, collapse="|")) %>%
+distinct()
 
 # Save both annotated peaks and peak bed for motif screening
 write.table(dat[,1:4], 'annotated_peaks.bed', row.names = FALSE, quote = FALSE, col.names = FALSE, sep = "\t")
