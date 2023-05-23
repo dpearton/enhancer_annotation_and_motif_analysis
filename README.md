@@ -57,20 +57,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
       --peaks_bed <PEAK_BED_FILE> \
       -profile <docker/singularity/conda>
    ```
-
-   OR
-
-   ```bash
-   nextflow run Streit-lab/enhancer_annotation_and_motif_analysis \
-      -r main \
-      -c <YOURPROFILE> \
-      -profile <docker/singularity/conda>
-   ```
-
-   Note that some form of configuration will be needed so that Nextflow knows how to fetch the required software. This is usually done in the form of a config profile (`YOURPROFILE` in the example command above). You can chain multiple config profiles in a comma-separated string.
-
-   An example config profile can be found [here](https://github.com/Streit-lab/enhancer_annotation_and_motif_analysis/blob/main/conf/test.config)
-
+   
    > - The pipeline comes with config profiles called `docker`, `singularity` and `conda` which instruct the pipeline to use the named tool for software management. For example, `-profile test,docker`.
    > - If you are using `singularity`, please use the [`nf-core download`](https://nf-co.re/tools/#downloading-pipelines-for-offline-use) command to download images first, before running the pipeline. Setting the [`NXF_SINGULARITY_CACHEDIR` or `singularity.cacheDir`](https://www.nextflow.io/docs/latest/singularity.html?#singularity-docker-hub) Nextflow options enables you to store and re-use the images from a central location for future pipeline runs.
    > - If you are using `conda`, it is highly recommended to use the [`NXF_CONDA_CACHEDIR` or `conda.cacheDir`](https://www.nextflow.io/docs/latest/conda.html) settings to store the environments in a central location for future pipeline runs.
