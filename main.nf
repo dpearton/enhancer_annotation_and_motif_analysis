@@ -60,10 +60,11 @@ Channel
     .from(file(params.peaks_bed, checkIfExists:true))
     .set{ch_peak_bed}
 
+if (params.gene_ids){
 Channel
     .from(file(params.gene_ids, checkIfExists:true))
     .set{ch_gene_ids}
-
+}
 /*------------------------------------------------------------------------------------
 Workflow
 --------------------------------------------------------------------------------------*/
