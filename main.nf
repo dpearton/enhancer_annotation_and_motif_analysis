@@ -118,17 +118,17 @@ workflow {
     if (params.ctcf) {
         EXTRACT_FLANKING_CTCF ( BEDTOOLS_SORT_PEAKS.out.sorted, params.ctcf, SAMTOOLS_FAIDX.out.fai )
         BEDTOOLS_SORT_FLANKING_CTCF ( EXTRACT_FLANKING_CTCF.out.bed )
-        ANNOTATE_PEAKS_TO_GTF_CTCF ( ch_peak_bed, FILTER_GTF_GENE_LIST.out.gtf, BEDTOOLS_SORT_FLANKING_CTCF.out.sorted )
+        ANNOTATE_PEAKS_TO_GTF_CTCF ( ch_peak_bed, ch_filtered_gtf, BEDTOOLS_SORT_FLANKING_CTCF.out.sorted )
 
         ch_peak_annotations_bed = ANNOTATE_PEAKS_TO_GTF_CTCF.out.bed
         ch_peak_annotations_tsv = ANNOTATE_PEAKS_TO_GTF_CTCF.out.tsv
 
     } else {
-        EXTRACT_GTF_WINDOW_COORDINATES( FILTER_GTF_GENE_LIST.out.gtf, SAMTOOLS_FAIDX.out.fai )
+        EXTRACT_GTF_WINDOW_COORDINATES( ch_filtered_gtf, SAMTOOLS_FAIDX.out.fai )
         INTERSECT_PEAKS_GTF( ch_peak_bed, EXTRACT_GTF_WINDOW_COORDINATES.out.bed )
         COLLAPSE_BEDTOOLS_INTERSECT( INTERSECT_PEAKS_GTF.out.bed )
 
-        // ANNOTATE_PEAKS_TO_GTF( ch_peak_bed, FILTER_GTF_GENE_LIST.out.gtf )
+        // ANNOTATE_PEAKS_TO_GTF( ch_peak_bed, ch_filtered_gtf )
 
         ch_peak_annotations_bed = COLLAPSE_BEDTOOLS_INTERSECT.out.bed
         ch_peak_annotations_tsv = COLLAPSE_BEDTOOLS_INTERSECT.out.tsv
